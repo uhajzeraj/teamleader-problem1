@@ -1,0 +1,21 @@
+{
+    "name": "uhajzeraj/teamleader-problem1",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Uran Hajzeraj",
+            "email": "uhajzeraj@hotmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "slim/slim": "4.*",
+        "nyholm/psr7": "^1.4",
+        "nyholm/psr7-server": "^1.0"
+    }
+}
