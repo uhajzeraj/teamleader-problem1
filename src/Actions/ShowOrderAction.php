@@ -18,13 +18,13 @@ final class ShowOrderAction
             "items": [
             {
             "product-id": "A101",
-            "quantity": "2",
+            "quantity": "12",
             "unit-price": "9.75",
             "total": "19.50"
             },
             {
             "product-id": "A102",
-            "quantity": "1",
+            "quantity": "6",
             "unit-price": "49.50",
             "total": "49.50"
             }
@@ -39,6 +39,8 @@ final class ShowOrderAction
         // Calculate the discount
         // Store the order with the discount data
 
+        $discounts = [];
+
         // ======== First Discount
 
         // check order customer and see if order exceeds 1000 euros
@@ -47,6 +49,10 @@ final class ShowOrderAction
         $customer = $this->getCustomerById($request, $order['customer-id']);
         if ((float) $customer['revenue'] > 1000) {
             // Adjust the order total here
+            $discounts[] = [
+                'reason' => 'customer_total_spent_over_1000',
+                'discount' => round($order['total'] * 0.1, 2),
+            ];
         }
 
         // ======== Second Discount
@@ -66,6 +72,10 @@ final class ShowOrderAction
         foreach ($items as $item) {
             $freeItemsCount = (int) floor((int) $item['quantity'] / 6);
             $itemDiscount = (float) $item['unit-price'] * $freeItemsCount;
+            $discounts[] = [
+                'reason' => "sixth_switch_product_bought_{$item['product-id']}",
+                'discount' => round($itemDiscount, 2),
+            ];
         }
 
         // ======== Third Discount
@@ -94,10 +104,20 @@ final class ShowOrderAction
 
                 return $cheapestItem;
             });
+
+            $discounts[] = [
+                'reason' => "two_or_more_tools_category_product_discount_{$cheapestItem['product-id']}",
+                'discount' => round((float) $cheapestItem['unit-price'] * 0.2, 2),
+            ];
         }
 
         // Q: What happens when two or more discount conditions are met?
         // Probably combine the discounts
+
+        // dd();
+        // $response->with
+        $response->getBody()->write(json_encode(['discounts' => $discounts]));
+        $response = $response->withHeader('Content-Type', 'application/json');
 
         return $response;
     }
