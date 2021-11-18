@@ -2,7 +2,7 @@
 
 namespace App\Actions;
 
-use Psr\Http\Message\RequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 final class ShowOrderAction
@@ -44,7 +44,7 @@ final class ShowOrderAction
         // check order customer and see if order exceeds 1000 euros
         // if yes, give 10% discount on the order total
         // TODO: Extract to a repository
-        $customer = $this->getCustomerById($order['customer-id']);
+        $customer = $this->getCustomerById($request, $order['customer-id']);
         if ((float) $customer['revenue'] > 1000) {
             // Adjust the order total here
         }
@@ -55,10 +55,10 @@ final class ShowOrderAction
         // for every 5 items, give the 6th for free (just check the ordering of products)
 
         // Get the available products
-        $rootDir = dirname($_SERVER['DOCUMENT_ROOT']);
+        $rootDir = dirname($request->getServerParams()['DOCUMENT_ROOT']);
 
         $products = json_decode(file_get_contents($rootDir . '/var/products.json'), true);
-        $products = array_filter($products, fn ($product) => $product['category'] === '1');
+        $products = array_filter($products, fn ($product) => $product['category'] === '2');
         $productIds = array_map(fn ($product) => $product['id'], $products);
 
         $items = array_filter($order['items'], fn ($item) => in_array($item['product-id'], $productIds));
@@ -73,15 +73,38 @@ final class ShowOrderAction
         // check for "tools" category (id 1) of items
         // if there are 2 or more items in this category, give a 20% discount on the cheapest item
 
+        // Get the available products
+        $rootDir = dirname($request->getServerParams()['DOCUMENT_ROOT']);
+
+        $products = json_decode(file_get_contents($rootDir . '/var/products.json'), true);
+        $products = array_filter($products, fn ($product) => $product['category'] === '1');
+        $productIds = array_map(fn ($product) => $product['id'], $products);
+
+        $items = array_filter($order['items'], fn ($item) => in_array($item['product-id'], $productIds));
+        if (count($items) >= 2) {
+            // Adjust the price for the cheapest item
+            $cheapestItem = array_reduce($items, function ($cheapestItem, $item) {
+                if ($cheapestItem === null) {
+                    return $item;
+                }
+
+                if ((float) $item['unit-price'] < (float) $cheapestItem['unit-price']) {
+                    return $item;
+                }
+
+                return $cheapestItem;
+            });
+        }
+
         // Q: What happens when two or more discount conditions are met?
         // Probably combine the discounts
 
         return $response;
     }
 
-    private function getCustomerById(string $customerId): array
+    private function getCustomerById(Request $request, string $customerId): array
     {
-        $rootDir = dirname($_SERVER['DOCUMENT_ROOT']);
+        $rootDir = dirname($request->getServerParams()['DOCUMENT_ROOT']);
 
         $customers = json_decode(file_get_contents($rootDir . '/var/customers.json'), true);
 
