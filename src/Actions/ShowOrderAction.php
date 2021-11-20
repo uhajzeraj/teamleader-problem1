@@ -2,11 +2,17 @@
 
 namespace App\Actions;
 
+use App\Repositories\CustomerRepository;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 final class ShowOrderAction
 {
+    public function __construct(
+        private CustomerRepository $customerRepository,
+    ) {
+    }
+
     public function __invoke(Request $request, Response $response, string $id): Response
     {
         // TODO: Make this dynamic later on
@@ -46,7 +52,7 @@ final class ShowOrderAction
         // check order customer and see if order exceeds 1000 euros
         // if yes, give 10% discount on the order total
         // TODO: Extract to a repository
-        $customer = $this->getCustomerById($request, $order['customer-id']);
+        $customer = $this->customerRepository->getByCustomerId($order['customer-id']);
         if ((float) $customer['revenue'] > 1000) {
             // Adjust the order total here
             $discounts[] = [
@@ -120,14 +126,5 @@ final class ShowOrderAction
         $response = $response->withHeader('Content-Type', 'application/json');
 
         return $response;
-    }
-
-    private function getCustomerById(Request $request, string $customerId): array
-    {
-        $rootDir = dirname($request->getServerParams()['DOCUMENT_ROOT']);
-
-        $customers = json_decode(file_get_contents($rootDir . '/var/customers.json'), true);
-
-        return array_values((array_filter($customers, fn ($customer) => $customer['id'] === $customerId)))[0];
     }
 }
