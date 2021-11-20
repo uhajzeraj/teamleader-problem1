@@ -1,10 +1,17 @@
 <?php
 
-use Slim\Factory\AppFactory;
+use DI\Bridge\Slim\Bridge;
+use DI\ContainerBuilder;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$app = AppFactory::create();
+$containerBuilder = new ContainerBuilder();
+
+// Register dependencies
+$dependencies = require __DIR__ . '/../app/dependencies.php';
+$dependencies($containerBuilder);
+
+$app = Bridge::create($containerBuilder->build());
 
 $app->addErrorMiddleware(true, true, false);
 
