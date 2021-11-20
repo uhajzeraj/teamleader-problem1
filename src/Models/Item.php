@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-final class Item
+use JsonSerializable;
+
+final class Item implements JsonSerializable
 {
     public function __construct(
         private string $id,
         private string $category,
-        private int $price,
+        private float $price,
         private int $quantity = 1,
     ) {
     }
@@ -32,8 +34,23 @@ final class Item
         return $this->quantity;
     }
 
-    public function getPrice(): int
+    public function getPrice(): float
     {
         return $this->price;
+    }
+
+    public function getTotal(): float
+    {
+        return $this->quantity * $this->price;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'quantity' => $this->quantity,
+            'unit-price' => $this->price,
+            'total' => $this->getTotal(),
+        ];
     }
 }
