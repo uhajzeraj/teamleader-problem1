@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Models\Item;
 use App\Repositories\CustomerRepository;
 use App\Repositories\ProductsRepository;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -22,6 +23,9 @@ final class SaveOrderAction
 
         $order = json_decode($request->getBody(), true);
 
+        $products = $this->productsRepository->getByIds($order['items']);
+        // Create order
+
         $discounts = [];
 
         // ======== First Discount
@@ -32,12 +36,12 @@ final class SaveOrderAction
         // ======== Second Discount
         // check for "switches" category (id 2) of items
         // for every 5 items, give the 6th for free (just check the ordering of products)
-        $discounts = $this->applySecondDiscount($discounts, $order);
+        $discounts = $this->applySecondDiscount($discounts, $products);
 
         // ======== Third Discount
         // check for "tools" category (id 1) of items
         // if there are 2 or more items in this category, give a 20% discount on the cheapest item
-        $discounts = $this->applyThirdDiscount($discounts, $order);
+        $discounts = $this->applyThirdDiscount($discounts, $products);
 
         // Q: What happens when two or more discount conditions are met?
         // Probably combine the discounts
@@ -45,12 +49,12 @@ final class SaveOrderAction
         $discountsTotal = array_reduce($discounts, fn ($total, $discount) => $total + $discount['discount'], 0);
         $grandTotal = (string) ($order['total'] - $discountsTotal);
 
+        $response = $response->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(json_encode(array_merge(
             $order,
             ['grand_total' => $grandTotal],
             ['discounts' => $discounts],
         )));
-        $response = $response->withHeader('Content-Type', 'application/json');
 
         return $response;
     }
@@ -59,7 +63,6 @@ final class SaveOrderAction
     {
         $customer = $this->customerRepository->getByCustomerId($order['customer-id']);
         if ((float) $customer['revenue'] > 1000) {
-            // Adjust the order total here
             $discounts[] = [
                 'reason' => 'customer_total_spent_over_1000',
                 'discount' => round($order['total'] * 0.1, 2),
@@ -69,18 +72,18 @@ final class SaveOrderAction
         return $discounts;
     }
 
-    private function applySecondDiscount(array $discounts, $order): array
+    /**
+     * @param Item[] $items
+     */
+    private function applySecondDiscount(array $discounts, $items): array
     {
-        $products = $this->productsRepository->getByCategoryId(2);
-        $productIds = array_map(fn ($product) => $product['id'], $products);
-
-        $items = array_filter($order['items'], fn ($item) => in_array($item['product-id'], $productIds));
+        $items = array_filter($items, fn (Item $item) => $item->getCategory() === '1');
 
         foreach ($items as $item) {
-            $freeItemsCount = (int) floor((int) $item['quantity'] / 6);
-            $itemDiscount = (float) $item['unit-price'] * $freeItemsCount;
+            $freeItemsCount = (int) floor((int) $item->getQuantity() / 6);
+            $itemDiscount = (float) $item->getPrice() * $freeItemsCount;
             $discounts[] = [
-                'reason' => "sixth_switch_product_bought_{$item['product-id']}",
+                'reason' => "sixth_switch_product_bought_{$item->getId()}",
                 'discount' => round($itemDiscount, 2),
             ];
         }
@@ -88,20 +91,20 @@ final class SaveOrderAction
         return $discounts;
     }
 
-    private function applyThirdDiscount(array $discounts, $order): array
+    /**
+     * @param Item[] $items
+     */
+    private function applyThirdDiscount(array $discounts, $items): array
     {
-        $products = $this->productsRepository->getByCategoryId(1);
-        $productIds = array_map(fn ($product) => $product['id'], $products);
+        $items = array_filter($items, fn (Item $item) => $item->getCategory() === '1');
 
-        $items = array_filter($order['items'], fn ($item) => in_array($item['product-id'], $productIds));
         if (count($items) >= 2) {
-            // Adjust the price for the cheapest item
-            $cheapestItem = array_reduce($items, function ($cheapestItem, $item) {
+            $cheapestItem = array_reduce($items, function (?Item $cheapestItem, Item $item): Item {
                 if ($cheapestItem === null) {
                     return $item;
                 }
 
-                if ((float) $item['unit-price'] < (float) $cheapestItem['unit-price']) {
+                if ($item->getPrice() < $cheapestItem->getPrice()) {
                     return $item;
                 }
 
@@ -109,8 +112,8 @@ final class SaveOrderAction
             });
 
             $discounts[] = [
-                'reason' => "two_or_more_tools_category_product_discount_{$cheapestItem['product-id']}",
-                'discount' => round((float) $cheapestItem['unit-price'] * 0.2, 2),
+                'reason' => "two_or_more_tools_category_product_discount_{$cheapestItem->getId()}",
+                'discount' => round((float) $cheapestItem->getPrice() * 0.2, 2),
             ];
         }
 
