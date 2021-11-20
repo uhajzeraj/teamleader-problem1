@@ -7,7 +7,7 @@ use App\Repositories\ProductsRepository;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-final class ShowOrderAction
+final class SaveOrderAction
 {
     public function __construct(
         private CustomerRepository $customerRepository,
@@ -15,37 +15,12 @@ final class ShowOrderAction
     ) {
     }
 
-    public function __invoke(Request $request, Response $response, string $id): Response
+    public function __invoke(Request $request, Response $response): Response
     {
-        // TODO: Make this dynamic later on
         // TODO: Add validation
-        $order = <<<ORDER
-        {
-            "id": "3",
-            "customer-id": "3",
-            "items": [
-            {
-            "product-id": "A101",
-            "quantity": "12",
-            "unit-price": "9.75",
-            "total": "19.50"
-            },
-            {
-            "product-id": "A102",
-            "quantity": "6",
-            "unit-price": "49.50",
-            "total": "49.50"
-            }
-            ],
-            "total": "69.00"
-            }
-        ORDER;
+        // Return the order with the discount data
 
-        $order = json_decode($order, true);
-
-        // Validate the request payload
-        // Calculate the discount
-        // Store the order with the discount data
+        $order = json_decode($request->getBody(), true);
 
         $discounts = [];
 
