@@ -42,7 +42,14 @@ final class SaveOrderAction
         // Q: What happens when two or more discount conditions are met?
         // Probably combine the discounts
 
-        $response->getBody()->write(json_encode(['discounts' => $discounts]));
+        $discountsTotal = array_reduce($discounts, fn ($total, $discount) => $total + $discount['discount'], 0);
+        $grandTotal = (string) ($order['total'] - $discountsTotal);
+
+        $response->getBody()->write(json_encode(array_merge(
+            $order,
+            ['grand_total' => $grandTotal],
+            ['discounts' => $discounts],
+        )));
         $response = $response->withHeader('Content-Type', 'application/json');
 
         return $response;
