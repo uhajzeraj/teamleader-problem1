@@ -25,9 +25,31 @@ final class SaveOrderAction
         $discounts = [];
 
         // ======== First Discount
-
         // check order customer and see if order exceeds 1000 euros
         // if yes, give 10% discount on the order total
+        $discounts = $this->applyFirstDiscount($discounts, $order);
+
+        // ======== Second Discount
+        // check for "switches" category (id 2) of items
+        // for every 5 items, give the 6th for free (just check the ordering of products)
+        $discounts = $this->applySecondDiscount($discounts, $order);
+
+        // ======== Third Discount
+        // check for "tools" category (id 1) of items
+        // if there are 2 or more items in this category, give a 20% discount on the cheapest item
+        $discounts = $this->applyThirdDiscount($discounts, $order);
+
+        // Q: What happens when two or more discount conditions are met?
+        // Probably combine the discounts
+
+        $response->getBody()->write(json_encode(['discounts' => $discounts]));
+        $response = $response->withHeader('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    private function applyFirstDiscount(array $discounts, $order): array
+    {
         $customer = $this->customerRepository->getByCustomerId($order['customer-id']);
         if ((float) $customer['revenue'] > 1000) {
             // Adjust the order total here
@@ -37,11 +59,11 @@ final class SaveOrderAction
             ];
         }
 
-        // ======== Second Discount
+        return $discounts;
+    }
 
-        // check for "switches" category (id 2) of items
-        // for every 5 items, give the 6th for free (just check the ordering of products)
-
+    private function applySecondDiscount(array $discounts, $order): array
+    {
         $products = $this->productsRepository->getByCategoryId(2);
         $productIds = array_map(fn ($product) => $product['id'], $products);
 
@@ -56,12 +78,11 @@ final class SaveOrderAction
             ];
         }
 
-        // ======== Third Discount
+        return $discounts;
+    }
 
-        // check for "tools" category (id 1) of items
-        // if there are 2 or more items in this category, give a 20% discount on the cheapest item
-
-        // Get the available products
+    private function applyThirdDiscount(array $discounts, $order): array
+    {
         $products = $this->productsRepository->getByCategoryId(1);
         $productIds = array_map(fn ($product) => $product['id'], $products);
 
@@ -86,12 +107,6 @@ final class SaveOrderAction
             ];
         }
 
-        // Q: What happens when two or more discount conditions are met?
-        // Probably combine the discounts
-
-        $response->getBody()->write(json_encode(['discounts' => $discounts]));
-        $response = $response->withHeader('Content-Type', 'application/json');
-
-        return $response;
+        return $discounts;
     }
 }
