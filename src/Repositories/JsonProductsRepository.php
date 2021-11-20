@@ -32,7 +32,7 @@ class JsonProductsRepository implements ProductsRepository
             $result[] = new Item(
                 $product['id'],
                 $product['category'],
-                $product['price'] * 100,
+                $product['price'],
                 $item['quantity'],
             );
         }
