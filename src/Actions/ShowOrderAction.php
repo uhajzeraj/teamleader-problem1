@@ -3,6 +3,7 @@
 namespace App\Actions;
 
 use App\Repositories\CustomerRepository;
+use App\Repositories\ProductsRepository;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -10,6 +11,7 @@ final class ShowOrderAction
 {
     public function __construct(
         private CustomerRepository $customerRepository,
+        private ProductsRepository $productsRepository,
     ) {
     }
 
@@ -51,7 +53,6 @@ final class ShowOrderAction
 
         // check order customer and see if order exceeds 1000 euros
         // if yes, give 10% discount on the order total
-        // TODO: Extract to a repository
         $customer = $this->customerRepository->getByCustomerId($order['customer-id']);
         if ((float) $customer['revenue'] > 1000) {
             // Adjust the order total here
@@ -66,11 +67,7 @@ final class ShowOrderAction
         // check for "switches" category (id 2) of items
         // for every 5 items, give the 6th for free (just check the ordering of products)
 
-        // Get the available products
-        $rootDir = dirname($request->getServerParams()['DOCUMENT_ROOT']);
-
-        $products = json_decode(file_get_contents($rootDir . '/var/products.json'), true);
-        $products = array_filter($products, fn ($product) => $product['category'] === '2');
+        $products = $this->productsRepository->getByCategoryId(2);
         $productIds = array_map(fn ($product) => $product['id'], $products);
 
         $items = array_filter($order['items'], fn ($item) => in_array($item['product-id'], $productIds));
@@ -90,10 +87,7 @@ final class ShowOrderAction
         // if there are 2 or more items in this category, give a 20% discount on the cheapest item
 
         // Get the available products
-        $rootDir = dirname($request->getServerParams()['DOCUMENT_ROOT']);
-
-        $products = json_decode(file_get_contents($rootDir . '/var/products.json'), true);
-        $products = array_filter($products, fn ($product) => $product['category'] === '1');
+        $products = $this->productsRepository->getByCategoryId(1);
         $productIds = array_map(fn ($product) => $product['id'], $products);
 
         $items = array_filter($order['items'], fn ($item) => in_array($item['product-id'], $productIds));
@@ -120,8 +114,6 @@ final class ShowOrderAction
         // Q: What happens when two or more discount conditions are met?
         // Probably combine the discounts
 
-        // dd();
-        // $response->with
         $response->getBody()->write(json_encode(['discounts' => $discounts]));
         $response = $response->withHeader('Content-Type', 'application/json');
 
