@@ -6,8 +6,6 @@ use App\Models\Item;
 
 interface ProductsRepository
 {
-    public function getByCategoryId(int $categoryId): array;
-
     /**
      * @return Item[]
      */
