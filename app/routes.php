@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Actions\HelloAction;
 use App\Actions\SaveOrderAction;
 use Slim\App;

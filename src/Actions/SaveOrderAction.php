@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Discounts\Handlers\DiscountHandler;
@@ -22,13 +24,13 @@ final class SaveOrderAction
     public function __invoke(Request $request, Response $response): Response
     {
         // TODO: Add validation
-        $data = json_decode($request->getBody(), true);
+        $data = json_decode((string) $request->getBody(), true);
 
         $products = $this->productsRepository->getByIds($data['items']);
 
         $order = new Order(
-            $data['id'],
-            $data['customer-id'],
+            (int) $data['id'],
+            (int) $data['customer-id'],
             $products
         );
 

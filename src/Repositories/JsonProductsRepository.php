@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Models\Item;
@@ -25,8 +27,8 @@ class JsonProductsRepository implements ProductsRepository
             $result[] = new Item(
                 $product['id'],
                 $product['category'],
-                $product['price'],
-                $item['quantity'],
+                (float) $product['price'],
+                (int) $item['quantity'],
             );
         }
 

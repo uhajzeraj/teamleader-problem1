@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Actions\SaveOrderAction;
 use App\Discounts\Handlers\DiscountHandler;
 use App\Discounts\Handlers\SwitchesCategoryDiscountHandler;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\Discounts\Discount;
@@ -16,7 +18,7 @@ class OrderTest extends TestCase
     {
         parent::setUp();
 
-        $items = [new Item(1, '2', '25.35', 1), new Item(2, '1', '27.95', 2)];
+        $items = [new Item('1', '2', 25.35, 1), new Item('2', '1', 27.95, 2)];
         $this->order = new Order(1, 1, $items);
     }
 
@@ -34,7 +36,7 @@ class OrderTest extends TestCase
         new Order(
             1,
             1,
-            [1, ['id' => 1, 'category' => '5'], new Item(1, '2', '25.35', 1)]
+            [1, ['id' => 1, 'category' => '5'], new Item('1', '2', 25.35, 1)]
         );
     }
 
