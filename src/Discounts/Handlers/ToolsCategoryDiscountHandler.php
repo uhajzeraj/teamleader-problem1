@@ -2,6 +2,7 @@
 
 namespace App\Discounts\Handlers;
 
+use App\Discounts\Discount;
 use App\Models\Item;
 use App\Models\Order;
 
@@ -24,10 +25,10 @@ class ToolsCategoryDiscountHandler implements DiscountHandler
                 return $cheapestItem;
             });
 
-            $order->applyDiscount([
-                'reason' => "more_than_two_category_tools_20_percent_discount_{$cheapestItem->getId()}",
-                'discount' => round((float) $cheapestItem->getPrice() * 0.2, 2),
-            ]);
+            $order->applyDiscount(new Discount(
+                "more_than_two_category_tools_20_percent_discount_{$cheapestItem->getId()}",
+                round((float) $cheapestItem->getPrice() * 0.2, 2),
+            ));
         }
     }
 }

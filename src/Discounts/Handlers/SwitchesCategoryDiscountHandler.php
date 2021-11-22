@@ -2,6 +2,7 @@
 
 namespace App\Discounts\Handlers;
 
+use App\Discounts\Discount;
 use App\Models\Item;
 use App\Models\Order;
 
@@ -16,10 +17,10 @@ class SwitchesCategoryDiscountHandler implements DiscountHandler
 
             $itemDiscount = (float) $item->getPrice() * $freeItemsCount;
 
-            $order->applyDiscount([
-                'reason' => "sixth_switch_product_bought_{$item->getId()}",
-                'discount' => round($itemDiscount, 2),
-            ]);
+            $order->applyDiscount(new Discount(
+                "sixth_switch_product_bought_{$item->getId()}",
+                round($itemDiscount, 2),
+            ));
         }
     }
 }

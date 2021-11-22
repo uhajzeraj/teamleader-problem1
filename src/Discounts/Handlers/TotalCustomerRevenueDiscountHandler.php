@@ -2,6 +2,7 @@
 
 namespace App\Discounts\Handlers;
 
+use App\Discounts\Discount;
 use App\Models\Order;
 use App\Repositories\CustomerRepository;
 
@@ -19,9 +20,9 @@ class TotalCustomerRevenueDiscountHandler implements DiscountHandler
             return;
         }
 
-        $order->applyDiscount([
-            'reason' => 'customer_total_spent_over_1000',
-            'discount' => round($order->getTotal() * 0.1, 2),
-        ]);
+        $order->applyDiscount(new Discount(
+            'customer_total_spent_over_1000',
+            round($order->getTotal() * 0.1, 2),
+        ));
     }
 }
