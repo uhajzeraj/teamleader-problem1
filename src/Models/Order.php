@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use JsonSerializable;
+use Webmozart\Assert\Assert;
 
 final class Order implements JsonSerializable
 {
@@ -16,6 +17,7 @@ final class Order implements JsonSerializable
         private int $customerId,
         private array $items
     ) {
+        Assert::allIsInstanceOf($items, Item::class);
     }
 
     public function getCustomerId(): int
