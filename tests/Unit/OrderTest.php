@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Discounts\Discount;
 use App\Models\Item;
 use App\Models\Order;
 use InvalidArgumentException;
@@ -53,15 +54,15 @@ class OrderTest extends TestCase
             $this->order->getTotal()
         );
 
-        $this->order->applyDiscount([
-            'reason' => 'discount_reason_1',
-            'discount' => 11.5,
-        ]);
+        $this->order->applyDiscount(new Discount(
+            'discount_reason_1',
+            11.5,
+        ));
 
-        $this->order->applyDiscount([
-            'reason' => 'discount_reason_2',
-            'discount' => 12,
-        ]);
+        $this->order->applyDiscount(new Discount(
+            'discount_reason_2',
+            12,
+        ));
 
         $this->assertSame(
             $this->order->getGrandTotal(),
