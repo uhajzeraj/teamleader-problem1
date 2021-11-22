@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Discounts\Discount;
 use JsonSerializable;
 use Webmozart\Assert\Assert;
 
@@ -42,14 +43,14 @@ final class Order implements JsonSerializable
 
     public function getGrandTotal(): float
     {
-        $discountsTotal = array_reduce($this->discounts, function ($total, $discount) {
-            return $total + $discount['discount'];
+        $discountsTotal = array_reduce($this->discounts, function ($total, Discount $discount) {
+            return $total + $discount->getAmount();
         }, 0);
 
         return $this->getTotal() - $discountsTotal;
     }
 
-    public function applyDiscount($discount): void
+    public function applyDiscount(Discount $discount): void
     {
         $this->discounts[] = $discount;
     }
