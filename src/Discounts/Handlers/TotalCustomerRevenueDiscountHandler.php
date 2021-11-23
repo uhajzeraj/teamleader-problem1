@@ -23,7 +23,7 @@ class TotalCustomerRevenueDiscountHandler implements DiscountHandler
         }
 
         $order->applyDiscount(new Discount(
-            'customer_total_spent_over_1000',
+            'customer_overall_total_spent_over_1000',
             round($order->getTotal() * 0.1, 2),
         ));
     }
