@@ -145,7 +145,7 @@ This example payload contains all the different available discounts as described
 Under `app/config/discounts.php` you can find the list of discounts in use.  
 In order to add more discounts, do the following:
 
-1. Create a new discount handler class under `src/Discounts/Handlers` (This new class **must** extend the **DiscountHandler** interface).
+1. Create a new discount handler class under `src/Discounts/Handlers` (This new class **must** implement the **DiscountHandler** interface).
 2. Add the FQCN of the newly created class on the `app/config/discounts.php` array.
 
 That's it. The container will take care of autowiring.
