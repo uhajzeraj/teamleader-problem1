@@ -152,5 +152,6 @@ That's it. The container will take care of autowiring.
 
 ## Possible improvements
 - Add form validation for the submitted JSON data
-- Increase the test coverage (possibly add feature tests)
 - Add error handling middleware (with proper logging)
+- Increase the test coverage (possibly add feature tests)
+- Increase psalm's strictness level
