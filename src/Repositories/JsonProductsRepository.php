@@ -26,7 +26,7 @@ class JsonProductsRepository implements ProductsRepository
 
             $result[] = new Item(
                 $product['id'],
-                $product['category'],
+                (int) $product['category'],
                 (float) $product['price'],
                 (int) $item['quantity'],
             );

@@ -10,7 +10,7 @@ class ToolsCategoryDiscountHandler implements DiscountHandler
 {
     public function handle(Order $order): void
     {
-        $items = array_filter($order->getItems(), fn (Item $item) => $item->getCategory() === '1');
+        $items = array_filter($order->getItems(), fn (Item $item) => $item->getCategory() === Item::CATEGORY_TOOLS);
 
         if (count($items) >= 2) {
             $cheapestItem = array_reduce($items, function (?Item $cheapestItem, Item $item): Item {

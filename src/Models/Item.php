@@ -8,9 +8,12 @@ use JsonSerializable;
 
 final class Item implements JsonSerializable
 {
+    public const CATEGORY_TOOLS = 1;
+    public const CATEGORY_SWITCHES = 2;
+
     public function __construct(
         private string $id,
-        private string $category,
+        private int $category,
         private float $price,
         private int $quantity = 1,
     ) {
@@ -26,7 +29,7 @@ final class Item implements JsonSerializable
         return $this->id;
     }
 
-    public function getCategory(): string
+    public function getCategory(): int
     {
         return $this->category;
     }

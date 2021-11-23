@@ -10,7 +10,7 @@ class SwitchesCategoryDiscountHandler implements DiscountHandler
 {
     public function handle(Order $order): void
     {
-        $items = array_filter($order->getItems(), fn (Item $item) => $item->getCategory() === '1');
+        $items = array_filter($order->getItems(), fn (Item $item) => $item->getCategory() === Item::CATEGORY_SWITCHES);
 
         foreach ($items as $item) {
             $freeItemsCount = floor($item->getQuantity() / 6);
