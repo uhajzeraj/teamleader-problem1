@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use JsonSerializable;
+use Webmozart\Assert\Assert;
 
 final class Item implements JsonSerializable
 {
@@ -17,11 +18,12 @@ final class Item implements JsonSerializable
         private float $price,
         private int $quantity = 1,
     ) {
+        Assert::greaterThan($quantity, 0);
     }
 
-    public function setQuantity(int $quantity): void
+    public function increaseQuantity(int $quantity): void
     {
-        $this->quantity = $quantity;
+        $this->quantity += $quantity;
     }
 
     public function getId(): string
@@ -46,7 +48,7 @@ final class Item implements JsonSerializable
 
     public function getTotal(): float
     {
-        return $this->quantity * $this->price;
+        return round($this->quantity * $this->price, 2);
     }
 
     public function jsonSerialize()
