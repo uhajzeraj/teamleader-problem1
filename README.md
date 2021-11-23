@@ -40,40 +40,40 @@ POST /orders
 With the following JSON payload example:  
 ```json
 {
-	"id": "3",
-	"customer-id": "2",
-	"items": [
-		{
-			"product-id": "A101",
-			"quantity": "2",
-			"unit-price": "9.75",
-			"total": "19.50"
-		},
-		{
-			"product-id": "A102",
-			"quantity": "6",
-			"unit-price": "49.5",
-			"total": "297"
-		},
-		{
-			"product-id": "B101",
-			"quantity": "10",
-			"unit-price": "4.99",
-			"total": "49.9"
-		},
-		{
-			"product-id": "B102",
-			"quantity": "1",
-			"unit-price": "4.99",
-			"total": "4.99"
-		},
-		{
-			"product-id": "B103",
-			"quantity": "5",
-			"unit-price": "12.95",
-			"total": "64.75"
-		}
-	],
+  "id": "3",
+  "customer-id": "2",
+  "items": [
+    {
+      "product-id": "A101",
+      "quantity": "2",
+      "unit-price": "9.75",
+      "total": "19.50"
+    },
+    {
+      "product-id": "A102",
+      "quantity": "6",
+      "unit-price": "49.5",
+      "total": "297"
+    },
+    {
+      "product-id": "B101",
+      "quantity": "10",
+      "unit-price": "4.99",
+      "total": "49.9"
+    },
+    {
+      "product-id": "B102",
+      "quantity": "1",
+      "unit-price": "4.99",
+      "total": "4.99"
+    },
+    {
+      "product-id": "B103",
+      "quantity": "5",
+      "unit-price": "12.95",
+      "total": "64.75"
+    }
+  ],
     "total": "436.14"
 }
 ```
