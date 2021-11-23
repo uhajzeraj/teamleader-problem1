@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Models\Customer;
 use RuntimeException;
 
 class JsonCustomerRepository implements CustomerRepository
@@ -15,7 +16,7 @@ class JsonCustomerRepository implements CustomerRepository
     /**
      * @throws RuntimeException
      */
-    public function getByCustomerId(int $customerId): array
+    public function getByCustomerId(int $customerId): Customer
     {
         $customers = json_decode(file_get_contents($this->rootDir . '/var/customers.json'), true);
 
@@ -25,6 +26,12 @@ class JsonCustomerRepository implements CustomerRepository
             throw new RuntimeException("Customer with id $customerId was not found");
         }
 
-        return $customers[0];
+        $customer = $customers[0];
+
+        return new Customer(
+            (int) $customer['id'],
+            $customer['name'],
+            (float) $customer['revenue'],
+        );
     }
 }
