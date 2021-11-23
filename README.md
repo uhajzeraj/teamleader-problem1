@@ -1,6 +1,6 @@
 # Teamleader Problem 1 (Discounts) implementation
 
-## General information:
+## General information
 
 PHP 8 is required.  
 The codebase uses the **Slim framework** and **PHP-DI** container.  
@@ -8,7 +8,7 @@ The container configuration can be found under `app/dependencies.php`.
 There are PHPUnit tests provided under the `tests/` directory.
 
 
-## Setup:
+## Setup
 
 Install composer dependencies:
 ```shell
@@ -30,7 +30,7 @@ $ ./vendor/bin/phpunit
 $ ./vendor/bin/psalm
 ```
 
-## API:
+## API
 
 There is one endpoint available:
 ```
@@ -138,5 +138,19 @@ The response would contain the following payload:
   ]
 }
 ```
-
 This example payload contains all the different available discounts as described on the instructions.
+
+## Adding more discount handlers
+
+Under `app/config/discounts.php` you can find the list of discounts in use.  
+In order to add more discounts, do the following:
+
+1. Create a new discount handler class under `src/Discounts/Handlers` (This new class **must** extend the **DiscountHandler** interface).
+2. Add the FQCN of the newly created class on the `app/config/discounts.php` array.
+
+That's it. The container will take care of autowiring.
+
+## Possible improvements
+- Add form validation for the submitted JSON data
+- Increase the test coverage (possibly add feature tests)
+- Add error handling middleware (with proper logging)
