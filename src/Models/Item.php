@@ -15,7 +15,7 @@ final class Item implements JsonSerializable
     public function __construct(
         private string $id,
         private int $category,
-        private float $price,
+        private int $price,
         private int $quantity = 1,
     ) {
         Assert::greaterThan($quantity, 0);
@@ -41,14 +41,14 @@ final class Item implements JsonSerializable
         return $this->quantity;
     }
 
-    public function getPrice(): float
+    public function getPrice(): int
     {
         return $this->price;
     }
 
-    public function getTotal(): float
+    public function getTotal(): int
     {
-        return round($this->quantity * $this->price, 2);
+        return $this->quantity * $this->price;
     }
 
     public function jsonSerialize()
@@ -56,8 +56,8 @@ final class Item implements JsonSerializable
         return [
             'id' => $this->id,
             'quantity' => $this->quantity,
-            'unit-price' => $this->price,
-            'total' => $this->getTotal(),
+            'unit-price' => round($this->price / 100, 2),
+            'total' => round($this->getTotal() / 100, 2),
         ];
     }
 }

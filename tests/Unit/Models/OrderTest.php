@@ -18,7 +18,7 @@ class OrderTest extends TestCase
     {
         parent::setUp();
 
-        $items = [new Item('1', 2, 25.35, 1), new Item('2', 1, 27.95, 2)];
+        $items = [new Item('1', 2, 2535, 1), new Item('2', 1, 2795, 2)];
         $this->order = new Order(1, 1, $items);
     }
 
@@ -36,15 +36,15 @@ class OrderTest extends TestCase
         new Order(
             1,
             1,
-            [1, new Item('1', 2, 25.35, 1)]
+            [1, new Item('1', 2, 2535, 1)]
         );
     }
 
     /** @test */
     public function it_can_calculate_the_total()
     {
-        $item1 = 25.35;
-        $item2 = 27.95 * 2;
+        $item1 = 2535;
+        $item2 = 2795 * 2;
         $this->assertSame($this->order->getTotal(), $item1 + $item2);
     }
 
@@ -58,17 +58,17 @@ class OrderTest extends TestCase
 
         $this->order->applyDiscount(new Discount(
             'discount_reason_1',
-            11.5,
+            1150,
         ));
 
         $this->order->applyDiscount(new Discount(
             'discount_reason_2',
-            12,
+            1200,
         ));
 
         $this->assertSame(
             $this->order->getGrandTotal(),
-            $this->order->getTotal() - 23.5
+            $this->order->getTotal() - 2350
         );
     }
 }

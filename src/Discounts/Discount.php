@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Discounts;
 
 use JsonSerializable;
@@ -9,12 +11,12 @@ final class Discount implements JsonSerializable
 {
     public function __construct(
         private string $description,
-        private float $amount
+        private int $amount
     ) {
         Assert::greaterThan($amount, 0);
     }
 
-    public function getAmount(): float
+    public function getAmount(): int
     {
         return $this->amount;
     }
@@ -23,7 +25,7 @@ final class Discount implements JsonSerializable
     {
         return [
             'reason' => $this->description,
-            'discount' => $this->amount,
+            'discount' => round($this->amount / 100, 2),
         ];
     }
 }

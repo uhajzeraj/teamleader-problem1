@@ -31,7 +31,7 @@ class JsonCustomerRepository implements CustomerRepository
         return new Customer(
             (int) $customer['id'],
             $customer['name'],
-            (float) $customer['revenue'],
+            (int) ($customer['revenue'] * 100),
         );
     }
 }

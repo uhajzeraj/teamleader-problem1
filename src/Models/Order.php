@@ -36,22 +36,22 @@ final class Order implements JsonSerializable
         return $this->items;
     }
 
-    public function getTotal(): float
+    public function getTotal(): int
     {
-        $total = array_reduce($this->items, function (float $total, Item $item) {
+        $total = array_reduce($this->items, function (int $total, Item $item) {
             return $total + $item->getTotal();
         }, 0);
 
-        return round($total, 2);
+        return $total;
     }
 
-    public function getGrandTotal(): float
+    public function getGrandTotal(): int
     {
-        $discountsTotal = array_reduce($this->discounts, function (float $total, Discount $discount): float {
+        $discountsTotal = array_reduce($this->discounts, function (int $total, Discount $discount): int {
             return $total + $discount->getAmount();
         }, 0);
 
-        return round($this->getTotal() - $discountsTotal, 2);
+        return $this->getTotal() - $discountsTotal;
     }
 
     public function applyDiscount(Discount $discount): void
@@ -65,8 +65,8 @@ final class Order implements JsonSerializable
             'id' => $this->id,
             'customer-id' => $this->customerId,
             'items' => $this->items,
-            'total' => $this->getTotal(),
-            'grand_total' => $this->getGrandTotal(),
+            'total' => round($this->getTotal() / 100, 2),
+            'grand_total' => round($this->getGrandTotal() / 100, 2),
             'discounts' => $this->discounts,
         ];
     }

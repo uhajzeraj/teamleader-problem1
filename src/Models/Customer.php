@@ -9,11 +9,11 @@ final class Customer
     public function __construct(
         private int $id,
         private string $name,
-        private float $revenue,
+        private int $revenue,
     ) {
     }
 
-    public function getRevenue(): float
+    public function getRevenue(): int
     {
         return $this->revenue;
     }

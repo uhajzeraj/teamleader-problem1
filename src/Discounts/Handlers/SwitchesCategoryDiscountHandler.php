@@ -25,15 +25,15 @@ class SwitchesCategoryDiscountHandler implements DiscountHandler
         );
 
         foreach ($items as $item) {
-            $freeItemsCount = floor($item->getQuantity() / self::FREE_ITEM_THRESHOLD);
+            $freeItemsCount = (int) floor($item->getQuantity() / self::FREE_ITEM_THRESHOLD);
 
-            $item->increaseQuantity((int) $freeItemsCount);
+            $item->increaseQuantity($freeItemsCount);
 
             $itemDiscount = $item->getPrice() * $freeItemsCount;
 
             $order->applyDiscount(new Discount(
                 "five_switch_products_bought_{$item->getId()}",
-                round($itemDiscount, 2),
+                $itemDiscount,
             ));
         }
     }
