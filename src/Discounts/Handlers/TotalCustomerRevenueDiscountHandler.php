@@ -18,7 +18,7 @@ class TotalCustomerRevenueDiscountHandler implements DiscountHandler
     {
         $customer = $this->customerRepository->getByCustomerId($order->getCustomerId());
 
-        if ((float) $customer['revenue'] <= 1000) {
+        if ($customer->getRevenue() <= 1000) {
             return;
         }
 
