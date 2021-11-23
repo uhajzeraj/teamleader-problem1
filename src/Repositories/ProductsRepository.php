@@ -11,5 +11,5 @@ interface ProductsRepository
     /**
      * @return Item[]
      */
-    public function getByIds(array $ids): array;
+    public function getByIds(array $items): array;
 }

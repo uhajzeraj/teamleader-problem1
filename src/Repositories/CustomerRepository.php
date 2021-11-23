@@ -11,5 +11,5 @@ interface CustomerRepository
     /**
      * @throws RuntimeException
      */
-    public function getByCustomerId(int $customerId);
+    public function getByCustomerId(int $customerId): array;
 }

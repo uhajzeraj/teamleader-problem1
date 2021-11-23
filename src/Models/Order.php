@@ -45,7 +45,7 @@ final class Order implements JsonSerializable
 
     public function getGrandTotal(): float
     {
-        $discountsTotal = array_reduce($this->discounts, function ($total, Discount $discount) {
+        $discountsTotal = array_reduce($this->discounts, function (float $total, Discount $discount): float {
             return $total + $discount->getAmount();
         }, 0);
 

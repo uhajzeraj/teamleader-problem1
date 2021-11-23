@@ -27,7 +27,7 @@ class ToolsCategoryDiscountHandler implements DiscountHandler
 
             $order->applyDiscount(new Discount(
                 "more_than_two_category_tools_20_percent_discount_{$cheapestItem->getId()}",
-                round((float) $cheapestItem->getPrice() * 0.2, 2),
+                round($cheapestItem->getPrice() * 0.2, 2),
             ));
         }
     }

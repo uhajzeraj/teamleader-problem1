@@ -19,7 +19,7 @@ class JsonCustomerRepository implements CustomerRepository
     {
         $customers = json_decode(file_get_contents($this->rootDir . '/var/customers.json'), true);
 
-        $customers = array_values((array_filter($customers, fn ($customer) => (int) $customer['id'] === $customerId)));
+        $customers = array_values((array_filter($customers, fn (array $customer) => (int) $customer['id'] === $customerId)));
 
         if ($customers === []) {
             throw new RuntimeException("Customer with id $customerId was not found");

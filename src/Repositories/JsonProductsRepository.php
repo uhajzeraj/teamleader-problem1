@@ -16,8 +16,8 @@ class JsonProductsRepository implements ProductsRepository
     {
         $products = json_decode(file_get_contents($this->rootDir . '/var/products.json'), true);
 
-        $itemIds = array_map(fn ($item) => $item['product-id'], $items);
-        $products = array_filter($products, fn ($product) => in_array($product['id'], $itemIds));
+        $itemIds = array_map(fn (array $item): string => $item['product-id'], $items);
+        $products = array_filter($products, fn (array $product): bool => in_array($product['id'], $itemIds));
 
         $result = [];
 
