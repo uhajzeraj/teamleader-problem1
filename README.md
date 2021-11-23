@@ -1,5 +1,10 @@
 # Teamleader Problem 1 (Discounts) implementation
 
+- [General information](#general-information)
+- [Setup](#setup)
+- [API](#api)
+- [Adding discount handlers](#adding-discount-handlers)
+- [Possible improvements](#possible-improvements)
 ## General information
 
 PHP 8 is required.  
@@ -140,7 +145,7 @@ The response would contain the following payload:
 ```
 This example payload contains all the different available discounts as described on the instructions.
 
-## Adding more discount handlers
+## Adding discount handlers
 
 Under `app/config/discounts.php` you can find the list of discounts in use.  
 In order to add more discounts, do the following:
