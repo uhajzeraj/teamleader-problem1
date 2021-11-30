@@ -21,6 +21,7 @@ final class Order implements JsonSerializable
         private array $items
     ) {
         Assert::allIsInstanceOf($items, Item::class);
+        Assert::minCount($items, 1);
     }
 
     public function getCustomerId(): int
@@ -57,6 +58,14 @@ final class Order implements JsonSerializable
     public function applyDiscount(Discount $discount): void
     {
         $this->discounts[] = $discount;
+    }
+
+    /**
+     * @return Discount[]
+     */
+    public function getDiscounts(): array
+    {
+        return $this->discounts;
     }
 
     public function jsonSerialize()
