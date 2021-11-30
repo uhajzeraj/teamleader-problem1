@@ -10,7 +10,7 @@
 PHP 8 is required.  
 The codebase uses the **Slim framework** and **PHP-DI** container.  
 The container configuration can be found under `app/dependencies.php`.  
-There are PHPUnit tests provided under the `tests/` directory.
+There are a few PHPUnit tests provided under the `tests/` directory.
 
 
 ## Setup
@@ -144,6 +144,53 @@ The response would contain the following payload:
 }
 ```
 This example payload contains all the different available discounts as described on the instructions.
+
+### cURL example
+
+You can use cURL on the command line for testing.  
+* The `--data` property can be changed as needed:
+```
+curl --request POST \
+  --url http://localhost:8000/orders \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"id": "3",
+	"customer-id": "2",
+	"items": [
+		{
+			"product-id": "A101",
+			"quantity": "2",
+			"unit-price": "9.75",
+			"total": "19.50"
+		},
+		{
+			"product-id": "A102",
+			"quantity": "6",
+			"unit-price": "49.5",
+			"total": "297"
+		},
+		{
+			"product-id": "B101",
+			"quantity": "10",
+			"unit-price": "4.99",
+			"total": "49.9"
+		},
+		{
+			"product-id": "B102",
+			"quantity": "1",
+			"unit-price": "4.99",
+			"total": "4.99"
+		},
+		{
+			"product-id": "B103",
+			"quantity": "5",
+			"unit-price": "12.95",
+			"total": "64.75"
+		}
+	],
+	"total": "436.14"
+}'
+```
 
 ## Adding discount handlers
 
