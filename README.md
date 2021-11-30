@@ -9,6 +9,7 @@
 
 PHP 8 is required.  
 The codebase uses the **Slim framework** and **PHP-DI** container.  
+Some of the other dependencies are listed on `composer.json`.  
 The container configuration can be found under `app/dependencies.php`.  
 There are a few PHPUnit tests provided under the `tests/` directory.
 
@@ -148,7 +149,7 @@ This example payload contains all the different available discounts as described
 ### cURL example
 
 You can use cURL on the command line for testing.  
-* The `--data` property can be changed as needed:
+*The `--data` property can be changed as needed:
 ```
 curl --request POST \
   --url http://localhost:8000/orders \
